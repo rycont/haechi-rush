@@ -26,7 +26,7 @@ yarn add @haechi/rush
 // /src/hello.ts
 
 import { z } from "zod";
-import { handler } from "../rush";
+import { handler } from "@haechi/rush";
 
 export default handler({
   async action(props) {
@@ -40,7 +40,7 @@ export default handler({
 ```typescript
 // /index.ts
 
-import { rush } from "./rush";
+import { handler } from "@haechi/rush";
 
 rush(__dirname + "/src");
 ```
@@ -55,7 +55,7 @@ yarn ts-node ./index.ts
 
 ```typescript
 import { z } from "zod";
-import { handler } from "../rush";
+import { handler } from "@haechi/rush";
 
 export const get = handler({
   title: "Say Hello",
@@ -93,7 +93,10 @@ export const post = handler({
       message: z.string(),
       status: z.number(),
     }),
-    example: "But nothing has changed",
+    example: {
+      message: "But nothing has changed",
+      status: -300
+    }
   },
   async action(props) {
     if (!props.header.Authorization) {
@@ -113,7 +116,7 @@ export const post = handler({
 
 ## Auto Documentation
 
-Generated document is avaliable on "/docs" endpoint. If you want to use /docs endpoint, you can change document path. In index.ts,
+Generated document is avaliable on "/docs" endpoint. If you want to use /docs endpoint with your own, you can change document path. In index.ts,
 
 ```typescript
 rush(__dirname + "/src", {
@@ -124,6 +127,31 @@ rush(__dirname + "/src", {
 ```
 
 Following above, you can change swagger serving path.
+
+## How to use SSE? (Raw Response)
+
+You can send raw response with `response.type = "raw"` option.
+
+```typescript
+
+import { handler } from "../../handler";
+
+export default handler({
+  response: {
+    type: "raw",
+  },
+  action({ send, setHeader }) {
+    setHeader("Content-Type", "text/event-stream");
+    setHeader("Cache-Control", "no-cache");
+    setHeader("Connection", "keep-alive");
+
+    send("\n");
+
+    send("event: data\n");
+    send("data: Initializing\n\n");
+  },
+});
+```
 
 ## Additional Features
 
