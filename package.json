@@ -11,10 +11,12 @@
     "typescript": "^4.7.4"
   },
   "name": "@haechi/rush",
-  "main": "./rush.ts",
-  "version": "2.0.1",
+  "version": "2.0.7",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node ./index.ts"
-  }
+    "dev": "ts-node ./index.ts",
+    "deploy": "yarn tsc && npm publish"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts"
 }
