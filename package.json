@@ -11,7 +11,8 @@
     "typescript": "^4.7.4"
   },
   "name": "@haechi/rush",
-  "version": "2.0.0",
+  "main": "./rush.ts",
+  "version": "2.0.1",
   "license": "MIT",
   "scripts": {
     "dev": "ts-node ./index.ts"
