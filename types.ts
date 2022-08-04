@@ -31,6 +31,7 @@ export interface Handler<
   response?: {
     scheme?: ResponseType;
     example?: z.infer<ResponseType>;
+    type?: "raw";
   };
   query?: {
     validate?: QueryType;

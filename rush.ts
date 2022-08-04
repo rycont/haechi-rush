@@ -19,8 +19,20 @@ const hasToString = (
 const sendResponse = (
   result: any,
   res: http.ServerResponse,
-  headerPot: Record<string, string | number>
+  headerPot: Record<string, string | number>,
+  config: {
+    isRaw?: boolean;
+  } = {}
 ) => {
+  if (config.isRaw) {
+    if (Object.keys(headerPot).length > 0) {
+      res.writeHead(200, headerPot);
+    }
+    res.write(result);
+
+    return
+  }
+
   if (result === undefined) return;
 
   if (typeof result === "object") {
@@ -115,8 +127,8 @@ export const rush = async (
     .createServer(async (req, res) => {
       let headerPot = config.cors
         ? {
-            "Access-Control-Allow-Origin": config.cors,
-          }
+          "Access-Control-Allow-Origin": config.cors,
+        }
         : ({} as {});
 
       try {
@@ -156,8 +168,7 @@ export const rush = async (
 
         if (!handler)
           throw new RushError(
-            `"${
-              req.method
+            `"${req.method
             }" is not allowed method. Avaliable methods are ${Object.keys(
               matchedEndpoint.methods
             ).join(", ")}`,
@@ -202,11 +213,16 @@ export const rush = async (
                 };
               },
               send(value) {
-                sendResponse(value, res, headerPot);
+                sendResponse(value, res, headerPot, {
+                  isRaw: handler.response?.type === "raw",
+                });
+                headerPot = {};
               },
             });
 
-            sendResponse(result, res, headerPot);
+            sendResponse(result, res, headerPot, {
+              isRaw: handler.response?.type === "raw",
+            });
           } catch (e) {
             if (e instanceof ZodError) {
               throw new RushError("Validation error occured", 400, {
