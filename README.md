@@ -134,7 +134,7 @@ You can send raw response with `response.type = "raw"` option.
 
 ```typescript
 
-import { handler } from "../../handler";
+import { handler } from "@haechi/rush";
 
 export default handler({
   response: {
